@@ -3,15 +3,50 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Agregar from "./pages/Agregar";
 import Historial from "./pages/Historial";
+import PrivateRoute from "./components/PrivateRoute";
+import Registro from "./pages/Registro";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/agregar" element={<Agregar />} />
-      <Route path="/historial" element={<Historial />} />
-      <Route path="*" element={<Navigate to="/dashboard" />} />
+
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/agregar"
+        element={
+          <PrivateRoute>
+            <Agregar />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/historial"
+        element={
+          <PrivateRoute>
+            <Historial />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="/login" 
+      element={
+      <Login />
+      } />
+      <Route path="/registro"
+      element={
+      <Registro />
+      } />
+
+      {/* Redireccionar rutas desconocidas */}
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }
