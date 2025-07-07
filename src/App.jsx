@@ -5,6 +5,7 @@ import Agregar from "./pages/Agregar";
 import Historial from "./pages/Historial";
 import PrivateRoute from "./components/PrivateRoute";
 import Registro from "./pages/Registro";
+import TestGrid from "./pages/TestGrid";
 
 function App() {
   return (
@@ -43,6 +44,10 @@ function App() {
       <Route path="/registro"
       element={
       <Registro />
+      } />
+      <Route path="/testgrid"
+      element={
+      <TestGrid />
       } />
 
       {/* Redireccionar rutas desconocidas */}

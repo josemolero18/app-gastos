@@ -1,51 +1,36 @@
 import { useEffect, useState } from "react";
-import { db, auth } from "../firebase";
-import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 
 function Historial() {
-  const [movimientos, setMovimientos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [ingresos, setIngresos] = useState([]);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return; // Si no hay usuario, no cargar nada
-
-    console.log("UID del usuario:", user.uid);
-
-    const q = query(
-      collection(db, "movimientos"),
-      where("uid", "==", user.uid),
-      orderBy("fecha", "desc")
-    );
-
+    const q = query(collection(db, "ingresos"), orderBy("fecha", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({
+      const ingresosData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setMovimientos(docs);
-      setLoading(false);
-    }, (error) => {
-      console.error("Error cargando movimientos:", error);
-      setLoading(false);
+      setIngresos(ingresosData);
     });
 
     return () => unsubscribe();
   }, []);
 
-  if (loading) return <p>Cargando movimientos...</p>;
-
-  if (movimientos.length === 0) return <p>No hay movimientos aún.</p>;
-
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Historial de movimientos</h2>
-      <ul>
-        {movimientos.map(mov => (
-          <li key={mov.id}>
-            <strong>{mov.tipo.toUpperCase()}</strong> - {mov.descripcion}<br />
-            💰 ${mov.monto.toFixed(2)} <br />
-            📅 {mov.fecha.toDate().toLocaleString()}
+    <div className="max-w-3xl mx-auto p-6 mt-24 bg-white rounded-lg shadow">
+      <h2 className="text-2xl font-semibold mb-4">Historial de Ingresos</h2>
+      <ul className="divide-y divide-gray-200">
+        {ingresos.map((ingreso) => (
+          <li key={ingreso.id} className="py-3">
+            <div className="flex justify-between">
+              <span className="font-medium">{ingreso.descripcion || "Ingreso sin descripción"}</span>
+              <span className="text-green-600 font-bold">$ {ingreso.monto.toLocaleString()}</span>
+            </div>
+            <div className="text-sm text-gray-500">
+              {ingreso.fecha?.toDate().toLocaleDateString()}
+            </div>
           </li>
         ))}
       </ul>
